@@ -8,8 +8,8 @@ if (-not $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administra
     Exit
 }
 
-# Crear carpeta C:\TAS-Impresion
-$path = "C:\TAS-Impresion"
+# Crear carpeta C:\Users\TAS\Desktop\TAS-Server
+$path = "C:\Users\TAS\Desktop\TAS-Server"
 if (!(Test-Path $path)) {
     New-Item -ItemType Directory -Path $path | Out-Null
     Write-Host "✅ Carpeta creada en $path"
