@@ -51,33 +51,55 @@ const server = http.createServer((req, res) => {
                 console.log('📊 Datos completos recibidos:', JSON.stringify(datos, null, 2));
 
                 const vencimientoLimpio = datos.vencimiento.replace('VTO_', '');
-                const idOriginal = datos.transaccion;
-                const idSinGuiones = idOriginal.replace(/-/g, '');
+                const idOriginal = datos.payment_id || datos.transaccion || 'N/A';
+		const idSinGuiones = idOriginal.replace(/-/g, '');
                 const nombreCliente = await obtenerNombreCliente(datos.nis);
                 console.log('🧾 Nombre del cliente:', nombreCliente);
+const ahora = new Date();
+const fechaPago = ahora.toLocaleDateString('es-AR'); // dd/mm/aaaa
+const horaPago  = ahora.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', hour12: false }); // hh:mm
+
+//Factura: ${datos.factura || 'N/A'}
+//Fecha Venc: ${datos.fecha || new Date().toLocaleDateString('es-AR')}
+
+const ESC = '\x1B';
+const GS = '\x1D';
+
+// Avanza 5 líneas antes del corte
+const feed = ESC + 'd' + '\x05';
+
 
                 const contenido = 
-`========================================================
-Coop. Elect y A. Popular de Rvia Ltda.
+`
+====================================
+Coop. Elect y A. Pop. de Rvia Ltda.
        COMPROBANTE DE PAGO
-========================================================
+====================================
 
 Cliente: ${nombreCliente}
+
 NIS: ${datos.nis || 'N/A'}
-Factura: ${datos.factura || 'N/A'}
-Fecha Venc: ${datos.fecha || new Date().toLocaleDateString('es-AR')}
+
 Importe pagado: $${datos.importe || '0'}
+
 Metodo de pago: ${datos.metodoPago || 'EFECTIVO'}
 
-${idSinGuiones || 'N/A'}
+Detalle de pagos efectuados
 
-Hora de pago    : ${new Date().toLocaleTimeString('es-AR')}
+-${datos.detalleFacturas ? datos.detalleFacturas + '\n' + '\n' : ''}
+ID:${idSinGuiones || 'N/A'}
 
-========================================================
+Fecha de pago: ${fechaPago}  
+Hora de pago: ${horaPago}
+
+====================================
        GRACIAS POR SU PAGO
     Pago sujeto a acreditacion.
   Ticket no valido como factura.
-========================================================
+====================================
+
+
+${feed}
 `;
 
                 const archivo = `comprobante_${Date.now()}.txt`;
