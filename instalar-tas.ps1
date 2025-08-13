@@ -9,7 +9,7 @@ if (-not $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administra
 }
 
 # Crear carpeta C:\Users\juanp\OneDrive\Escritorio\TAS-Server
-$path = "C:\Users\juanp\OneDrive\Escritorio\TAS-Server"
+$path = "C:\Users\TAS\Desktop\TAS-Server"
 if (!(Test-Path $path)) {
     New-Item -ItemType Directory -Path $path | Out-Null
     Write-Host "✅ Carpeta creada en $path"
